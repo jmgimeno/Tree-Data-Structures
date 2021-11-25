@@ -6,8 +6,8 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     int size;
 
     private static class Node<E> {
-        E element;
         Node<E> left;
+        E element;
         Node<E> right;
 
         Node(Node<E> left, E element, Node<E> right) {
@@ -43,11 +43,11 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         return size(root);
     }
 
-    private int size(Node<E> root) {
-        if (root == null)
+    private int size(Node<E> node) {
+        if (node == null)
             return 0;
         else
-            return size(root.left) + size(root.right) + 1;
+            return size(node.left) + size(node.right) + 1;
     }
 
     @Override
@@ -55,13 +55,13 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         return contains(o, root);
     }
 
-    private boolean contains(Object o, Node<E> root) {
-        if (root == null)
+    private boolean contains(Object o, Node<E> node) {
+        if (node == null)
             return false;
         else
-            return Objects.equals(root.element, o)
-                    || contains(o, root.left)
-                    || contains(o, root.right);
+            return Objects.equals(o, node.element)
+                    || contains(o, node.left)
+                    || contains(o, node.right);
     }
 
     @Override
@@ -70,16 +70,16 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
             return false;
 
         LinkedBinaryTree<?> bt = (LinkedBinaryTree<?>) o;
-        return equals(bt.root, root);
+        return equals(root, bt.root);
     }
 
-    private boolean equals(Node<?> root1, Node<?> root2) {
-        if (root1 == null || root2 == null)
-            return root1 == root2;
+    private boolean equals(Node<?> node1, Node<?> node2) {
+        if (node1 == null || node2 == null)
+            return node1 == node2;
 
-        return Objects.equals(root1.element, root2.element)
-                && equals(root1.left, root2.left)
-                && equals(root1.right, root2.right);
+        return Objects.equals(node1.element, node2.element)
+                && equals(node1.left, node2.left)
+                && equals(node1.right, node2.right);
     }
 
     @Override
@@ -87,11 +87,11 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         return height(root);
     }
 
-    private int height(Node<E> root) {
-        if (root == null)
+    private int height(Node<E> node) {
+        if (node == null)
             return 0;
         else
-            return Math.max(height(root.left), height(root.right)) + 1;
+            return Math.max(height(node.left), height(node.right)) + 1;
     }
 
     @Override
@@ -170,13 +170,13 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
             it = listTree.iterator();
         }
 
-        private List<Node<E>> preorder(Node<E> root) {
+        private List<Node<E>> preorder(Node<E> node) {
             List<Node<E>> lis = new ArrayList<>();
 
-            if (root != null) {
-                lis.add(root);
-                listTree.addAll(preorder(root.left));
-                listTree.addAll(preorder(root.right));
+            if (node != null) {
+                lis.add(node);
+                listTree.addAll(preorder(node.left));
+                listTree.addAll(preorder(node.right));
             }
 
             return lis;
