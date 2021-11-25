@@ -9,6 +9,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         E element;
         Node<E> left;
         Node<E> right;
+
         Node(Node<E> left, E element, Node<E> right) {
             this.left = left;
             this.element = element;
@@ -63,15 +64,15 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
     @Override
     public boolean equals(Object o) {
-        if (o==null || !(o instanceof LinkedBinaryTree))
+        if (!(o instanceof LinkedBinaryTree<?>))
             return false;
 
-        LinkedBinaryTree<E> bt = (LinkedBinaryTree<E>) o;
+        LinkedBinaryTree<?> bt = (LinkedBinaryTree<?>) o;
         return equals(bt.root, root);
     }
 
-    private boolean equals(Node<E> root1, Node<E> root2) {
-        if(root1 == null || root2 == null)
+    private boolean equals(Node<?> root1, Node<?> root2) {
+        if (root1 == null || root2 == null)
             return root1 == root2;
 
         return root1.element.equals(root2.element) && equals(root1.left, root2.left) && equals(root1.right, root2.right);
@@ -83,7 +84,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     }
 
     private int height(Node<E> root) {
-        if(root == null)
+        if (root == null)
             return 0;
         else
             return Math.max(height(root.left), height(root.right)) + 1;
@@ -94,7 +95,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         if (root == null)
             throw new NoSuchElementException();
 
-        return new LinkedBinaryTree<E>(root.left);
+        return new LinkedBinaryTree<>(root.left);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         if (root == null)
             throw new NoSuchElementException();
 
-        return new LinkedBinaryTree<E>(root.right);
+        return new LinkedBinaryTree<>(root.right);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         if (root == null)
             throw new NoSuchElementException();
 
-        return (E) root.element;
+        return root.element;
     }
 
     @Override
@@ -131,35 +132,35 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
     @Override
     public Iterator<E> iterator() {
-        return new PreBinTreeItr();
+        return new Preorder();
     }
 
     @Override
     public BinaryTreeIterator<E> iteratorPre() {
-        return new PreBinTreeItr();
+        return new Preorder();
     }
 
     @Override
     public BinaryTreeIterator<E> iteratorIn() {
-        return new InBinTreeItr();  //To be implemented
+        return new Inorder();
     }
 
     @Override
     public BinaryTreeIterator<E> iteratorPost() {
-        return new ProBinTreeItr(); //To be implemented
+        return new Postorder();
     }
 
     @Override
     public BinaryTreeIterator<E> iteratorLevels() {
-        return new ProBinTreeItr(); //To be implemented
+        return new Levels();
     }
 
-    private class PreBinTreeItr<E> implements BinaryTreeIterator<E> {
+    private class Preorder implements BinaryTreeIterator<E> {
         List<Node<E>> listTree;
         Iterator<Node<E>> it;
         Node<E> lastReturned;
 
-        PreBinTreeItr() {
+        Preorder() {
             lastReturned = null;
             listTree = preorder(LinkedBinaryTree.this.root);
             it = listTree.iterator();
@@ -168,10 +169,10 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         private List<Node<E>> preorder(Node<E> root) {
             List<Node<E>> lis = new ArrayList<>();
 
-            if (root != null){
+            if (root != null) {
                 lis.add(root);
                 listTree.addAll(preorder(root.left));
-                listTree.addAll((preorder(root.right));
+                listTree.addAll(preorder(root.right));
             }
 
             return lis;
@@ -195,10 +196,57 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
             lastReturned.element = o;
         }
+    }
+
+    private class Inorder implements BinaryTreeIterator<E> {
 
         @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
+        public void set(E o) {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
+        }
+
+        @Override
+        public boolean hasNext() {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
+        }
+
+        @Override
+        public E next() {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
+        }
+    }
+
+    private class Postorder implements BinaryTreeIterator<E> {
+        @Override
+        public void set(E o) {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
+        }
+
+        @Override
+        public boolean hasNext() {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
+        }
+
+        @Override
+        public E next() {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
+        }
+    }
+
+    private class Levels implements BinaryTreeIterator<E> {
+        @Override
+        public void set(E o) {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
+        }
+
+        @Override
+        public boolean hasNext() {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
+        }
+
+        @Override
+        public E next() {
+            throw new UnsupportedOperationException("Not Implemented"); // TODO
         }
     }
 }
