@@ -59,7 +59,9 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         if (root == null)
             return false;
         else
-            return Objects.equals(root.element, o) || contains(o, root.left) || contains(o, root.right);
+            return Objects.equals(root.element, o)
+                    || contains(o, root.left)
+                    || contains(o, root.right);
     }
 
     @Override
@@ -75,7 +77,9 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         if (root1 == null || root2 == null)
             return root1 == root2;
 
-        return root1.element.equals(root2.element) && equals(root1.left, root2.left) && equals(root1.right, root2.right);
+        return Objects.equals(root1.element, root2.element)
+                && equals(root1.left, root2.left)
+                && equals(root1.right, root2.right);
     }
 
     @Override
@@ -93,7 +97,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     @Override
     public LinkedBinaryTree<E> getLeftCh() {
         if (root == null)
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("left child of empty tree");
 
         return new LinkedBinaryTree<>(root.left);
     }
@@ -101,7 +105,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     @Override
     public LinkedBinaryTree<E> getRightCh() {
         if (root == null)
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("right child of empty tree");
 
         return new LinkedBinaryTree<>(root.right);
     }
@@ -109,7 +113,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     @Override
     public E root() {
         if (root == null)
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("root of empty tree");
 
         return root.element;
     }
