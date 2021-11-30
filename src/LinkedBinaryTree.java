@@ -40,7 +40,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
     @Override
     public int size() {
-        return size(root);
+        return this.size;
     }
 
     private int size(Node<E> node) {
