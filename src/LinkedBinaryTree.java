@@ -2,8 +2,7 @@ import java.util.*;
 
 public class LinkedBinaryTree<E> extends AbstractCollection<E> implements BinaryTree<E> {
 
-    Node<E> root;
-    int size;
+    private final Node<E> root;
 
     private static class Node<E> {
         Node<E> left;
@@ -19,28 +18,22 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
     public LinkedBinaryTree() {
         root = null;
-        size = 0;
     }
 
     public LinkedBinaryTree(LinkedBinaryTree<E> left, E elem, LinkedBinaryTree<E> right) {
         Node<E> leftCh = (left == null ? null : left.root);
         Node<E> rightCh = (right == null ? null : right.root);
 
-        int leftS = (left == null ? 0 : left.size);
-        int rightS = (right == null ? 0 : right.size);
-
         root = new Node<>(leftCh, elem, rightCh);
-        size = 1 + leftS + rightS;
     }
 
     private LinkedBinaryTree(Node<E> root) {
         this.root = root;
-        this.size = size(root);
     }
 
     @Override
     public int size() {
-        return this.size;
+        return size(root);
     }
 
     private int size(Node<E> node) {
@@ -48,6 +41,11 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
             return 0;
         else
             return size(node.left) + size(node.right) + 1;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return root == null;
     }
 
     @Override
@@ -121,7 +119,6 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     @Override
     public void removeLeftCh() {
         if (root != null) {
-            size = size(root.right) + 1;
             root.left = null;
         }
     }
@@ -129,7 +126,6 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     @Override
     public void removeRightCh() {
         if (root != null) {
-            size = size(root.left) + 1;
             root.right = null;
         }
     }
