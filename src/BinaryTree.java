@@ -2,12 +2,12 @@ import java.util.Collection;
 import java.util.Iterator;
 
 public interface BinaryTree<E> extends Collection<E> {
-    BinaryTree<E> getLeftCh();
-    BinaryTree<E> getRightCh();
+    BinaryTree<E> left();
+    BinaryTree<E> right();
     E root();
 
-    void removeLeftCh();
-    void removeRightCh();
+    void removeLeft();
+    void removeRight();
 
     int height();
 

@@ -93,7 +93,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     }
 
     @Override
-    public LinkedBinaryTree<E> getLeftCh() {
+    public LinkedBinaryTree<E> left() {
         if (root == null)
             throw new NoSuchElementException("left child of empty tree");
 
@@ -101,7 +101,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     }
 
     @Override
-    public LinkedBinaryTree<E> getRightCh() {
+    public LinkedBinaryTree<E> right() {
         if (root == null)
             throw new NoSuchElementException("right child of empty tree");
 
@@ -117,17 +117,21 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     }
 
     @Override
-    public void removeLeftCh() {
-        if (root != null) {
-            root.left = null;
-        }
+    public void removeLeft() {
+        if (root == null)
+            throw new NoSuchElementException("Empty tree");
+
+        root.left = null;
+
     }
 
     @Override
-    public void removeRightCh() {
-        if (root != null) {
-            root.right = null;
-        }
+    public void removeRight() {
+        if (root == null)
+            throw new NoSuchElementException("Empty tree");
+
+        root.right = null;
+
     }
 
     @Override
