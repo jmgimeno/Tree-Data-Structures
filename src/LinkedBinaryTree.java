@@ -3,6 +3,7 @@ import java.util.*;
 public class LinkedBinaryTree<E> extends AbstractCollection<E> implements BinaryTree<E> {
 
     private final Node<E> root;
+    private final int size;
 
     private static class Node<E> {
         Node<E> left;
@@ -17,30 +18,34 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     }
 
     public LinkedBinaryTree() {
-        root = null;
+        root = null; size = 0;
     }
 
     public LinkedBinaryTree(LinkedBinaryTree<E> left, E elem, LinkedBinaryTree<E> right) {
-        Node<E> leftCh = (left == null ? null : left.root);
-        Node<E> rightCh = (right == null ? null : right.root);
+        Node<E> leftCh = left == null ? null : left.root;
+        Node<E> rightCh = right == null ? null : right.root;
+        int leftSize = left == null ? 0 : left.size;
+        int rightSize = right == null ? 0 : right.size;
 
         root = new Node<>(leftCh, elem, rightCh);
+        size = 1 + leftSize + rightSize;
     }
 
     private LinkedBinaryTree(Node<E> root) {
         this.root = root;
+        size = size(root);
     }
 
     @Override
     public int size() {
-        return size(root);
+        return size;
     }
 
     private int size(Node<E> node) {
         if (node == null)
             return 0;
         else
-            return size(node.left) + size(node.right) + 1;
+            return 1+ size(node.left) + size(node.right);
     }
 
     @Override
