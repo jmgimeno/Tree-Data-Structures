@@ -3,49 +3,42 @@ import java.util.*;
 public class LinkedBinaryTree<E> extends AbstractCollection<E> implements BinaryTree<E> {
 
     private final Node<E> root;
-    private final int size;
 
     private static class Node<E> {
         Node<E> left;
         E element;
         Node<E> right;
+        int size;
 
         Node(Node<E> left, E element, Node<E> right) {
             this.left = left;
             this.element = element;
             this.right = right;
+            this.size = 1 + Node.size(left) + Node.size(right);
+        }
+
+        static int size(Node<?> node) {
+            return node == null ? 0 : node.size;
         }
     }
 
     public LinkedBinaryTree() {
-        root = null; size = 0;
+        root = null;
     }
 
     public LinkedBinaryTree(LinkedBinaryTree<E> left, E elem, LinkedBinaryTree<E> right) {
-        Node<E> leftCh = left == null ? null : left.root;
-        Node<E> rightCh = right == null ? null : right.root;
-        int leftSize = left == null ? 0 : left.size;
-        int rightSize = right == null ? 0 : right.size;
-
-        root = new Node<>(leftCh, elem, rightCh);
-        size = 1 + leftSize + rightSize;
+        Node<E> leftChild = left == null ? null : left.root;
+        Node<E> rightChild = right == null ? null : right.root;
+        root = new Node<>(leftChild, elem, rightChild);
     }
 
     private LinkedBinaryTree(Node<E> root) {
         this.root = root;
-        size = size(root);
     }
 
     @Override
     public int size() {
-        return size;
-    }
-
-    private int size(Node<E> node) {
-        if (node == null)
-            return 0;
-        else
-            return 1+ size(node.left) + size(node.right);
+        return Node.size(root);
     }
 
     @Override
@@ -85,6 +78,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
                 && equals(node1.right, node2.right);
     }
 
+    // If height was called often, we'd better catch it in a field (as we do with size)
     @Override
     public int height() {
         return height(root);
@@ -125,18 +119,16 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     public void removeLeft() {
         if (root == null)
             throw new NoSuchElementException("Empty tree");
-
+        root.size -= Node.size(root.left);
         root.left = null;
-
     }
 
     @Override
     public void removeRight() {
         if (root == null)
             throw new NoSuchElementException("Empty tree");
-
+        root.size -= Node.size(root.right);
         root.right = null;
-
     }
 
     @Override
