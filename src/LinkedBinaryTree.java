@@ -213,6 +213,33 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         }
     }
 
+    /*
+
+    Instead of using an internal class, we could have used a static nested class:
+    - This class need to add an explicit generic argument
+    - And needs to be passed a reference to the tree that is being iterated
+    - But using an internal class is more convenient !!!
+
+    public Iterator<E> iteratorPre() {
+        return new Preorder<>(this);
+    }
+
+    private static class Preorder<E2> implements BinaryTreeIterator<E2> {
+        List<Node<E2>> listTree;
+        Iterator<Node<E2>> it;
+        Node<E2> lastReturned;
+
+        Preorder(LinkedBinaryTree<E2> tree) {
+            lastReturned = null;
+            listTree = Node.preorder(tree.root);
+            it = listTree.iterator();
+        }
+
+        // ...
+    }
+
+    */
+
     private class Inorder implements BinaryTreeIterator<E> {
 
         @Override
