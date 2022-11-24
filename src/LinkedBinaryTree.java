@@ -4,13 +4,13 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
     private final Node<E> root;
 
-    private static class Node<E> {
-        Node<E> left;
-        E element;
-        Node<E> right;
+    private static class Node<E1> {
+        Node<E1> left;
+        E1 element;
+        Node<E1> right;
         int size;
 
-        Node(Node<E> left, E element, Node<E> right) {
+        Node(Node<E1> left, E1 element, Node<E1> right) {
             this.left = left;
             this.element = element;
             this.right = right;
@@ -19,6 +19,57 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
         static int size(Node<?> node) {
             return node == null ? 0 : node.size;
+        }
+
+        static boolean contains(Node<?> node, Object obj) {
+            if (node == null)
+                return false;
+            else
+                return Objects.equals(obj, node.element)
+                        || contains(node.left, obj)
+                        || contains(node.right, obj);
+        }
+
+        static boolean equals(Node<?> node1, Node<?> node2) {
+            if (node1 == null || node2 == null)
+                return node1 == node2;
+
+            return Objects.equals(node1.element, node2.element)
+                    && equals(node1.left, node2.left)
+                    && equals(node1.right, node2.right);
+        }
+
+        static int height(Node<?> node) {
+            if (node == null)
+                return 0;
+            else
+                return 1 + Math.max(height(node.left), height(node.right));
+        }
+
+        /*
+        An equivalent form would be using an explicit generic instead of the wildcard:
+
+        static <E2> int height(Node<E2> node) {
+            if (node == null)
+                return 0;
+            else
+                return 1 + Math.max(height(node.left), height(node.right));
+        }
+
+        */
+
+        static <E2> List<Node<E2>> preorder(Node<E2> node) {
+            List<Node<E2>> lis = new ArrayList<>();
+            preorder(node, lis);
+            return lis;
+        }
+
+        static <E2> void preorder(Node<E2> node, List<Node<E2>> lis) {
+            if (node != null) {
+                lis.add(node);
+                preorder(node.left, lis);
+                preorder(node.right, lis);
+            }
         }
     }
 
@@ -48,16 +99,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
     @Override
     public boolean contains(Object o) {
-        return contains(o, root);
-    }
-
-    private boolean contains(Object o, Node<E> node) {
-        if (node == null)
-            return false;
-        else
-            return Objects.equals(o, node.element)
-                    || contains(o, node.left)
-                    || contains(o, node.right);
+        return Node.contains(root, o);
     }
 
     @Override
@@ -66,29 +108,13 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
             return false;
 
         LinkedBinaryTree<?> bt = (LinkedBinaryTree<?>) o;
-        return equals(root, bt.root);
-    }
-
-    private boolean equals(Node<?> node1, Node<?> node2) {
-        if (node1 == null || node2 == null)
-            return node1 == node2;
-
-        return Objects.equals(node1.element, node2.element)
-                && equals(node1.left, node2.left)
-                && equals(node1.right, node2.right);
+        return Node.equals(root, bt.root);
     }
 
     // If height was called often, we'd better catch it in a field (as we do with size)
     @Override
     public int height() {
-        return height(root);
-    }
-
-    private int height(Node<E> node) {
-        if (node == null)
-            return 0;
-        else
-            return Math.max(height(node.left), height(node.right)) + 1;
+        return Node.height(root);
     }
 
     @Override
@@ -163,20 +189,8 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
         Preorder() {
             lastReturned = null;
-            listTree = preorder(LinkedBinaryTree.this.root);
+            listTree = Node.preorder(LinkedBinaryTree.this.root);
             it = listTree.iterator();
-        }
-
-        private List<Node<E>> preorder(Node<E> node) {
-            List<Node<E>> lis = new ArrayList<>();
-
-            if (node != null) {
-                lis.add(node);
-                listTree.addAll(preorder(node.left));
-                listTree.addAll(preorder(node.right));
-            }
-
-            return lis;
         }
 
         @Override
