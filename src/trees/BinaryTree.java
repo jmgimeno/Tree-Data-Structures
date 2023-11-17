@@ -28,7 +28,7 @@ public interface BinaryTree<E> extends Collection<E> {
      * Returns the root element of this binary tree.
      *
      * @return the root element of this binary tree.
-     * @throws {@link NoSuchElementException} if this binary tree is empty.
+     * @throws NoSuchElementException if this binary tree is empty.
      */
     E root();
 
@@ -55,26 +55,26 @@ public interface BinaryTree<E> extends Collection<E> {
      *
      * @return an iterator for traversing the binary tree in pre-order.
      */
-    BinaryTreeIterator<E> iteratorPre();
+    BinaryTreeIterator<E> preOrderIterator();
 
     /**
      * Returns an iterator for traversing the binary tree in in-order.
      *
      * @return an iterator for traversing the binary tree in in-order.
      */
-    BinaryTreeIterator<E> iteratorIn();
+    BinaryTreeIterator<E> inOrderIterator();
 
     /**
      * Returns an iterator for traversing the binary tree in post-order.
      *
      * @return an iterator for traversing the binary tree in post-order.
      */
-    BinaryTreeIterator<E> iteratorPost();
+    BinaryTreeIterator<E> postOrderIterator();
 
     /**
      * Returns an iterator for traversing the binary tree in level-order.
      *
      * @return an iterator for traversing the binary tree in level-order.
      */
-    BinaryTreeIterator<E> iteratorLevels();
+    BinaryTreeIterator<E> levelOrderIterator();
 }

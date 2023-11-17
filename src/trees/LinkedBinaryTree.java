@@ -240,7 +240,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @return an iterator for traversing the binary tree in pre-order.
      */
     @Override
-    public BinaryTreeIterator<E> iteratorPre() {
+    public BinaryTreeIterator<E> preOrderIterator() {
         return new Preorder();
     }
 
@@ -250,7 +250,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @return an iterator for traversing the binary tree in in-order.
      */
     @Override
-    public BinaryTreeIterator<E> iteratorIn() {
+    public BinaryTreeIterator<E> inOrderIterator() {
         return new Inorder();
     }
 
@@ -260,7 +260,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @return an iterator for traversing the binary tree in post-order.
      */
     @Override
-    public BinaryTreeIterator<E> iteratorPost() {
+    public BinaryTreeIterator<E> postOrderIterator() {
         return new Postorder();
     }
 
@@ -270,7 +270,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @return an iterator for traversing the binary tree in level-order.
      */
     @Override
-    public BinaryTreeIterator<E> iteratorLevels() {
+    public BinaryTreeIterator<E> levelOrderIterator() {
         return new Levels();
     }
 
