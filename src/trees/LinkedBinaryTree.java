@@ -1,7 +1,18 @@
+package trees;
+
 import java.util.*;
 
+/**
+ * A binary tree is a tree data structure in which each node has at most two children.
+ * This class implements the {@link BinaryTree} interface by using a structure of linked nodes.
+ *
+ * @param <E> the type of elements in the binary tree
+ */
 public class LinkedBinaryTree<E> extends AbstractCollection<E> implements BinaryTree<E> {
 
+    /**
+     * The root of the binary tree.
+     */
     private final Node<E> root;
 
     private static class Node<E1> {
@@ -33,10 +44,10 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         static boolean equals(Node<?> node1, Node<?> node2) {
             if (node1 == null || node2 == null)
                 return node1 == node2;
-
-            return Objects.equals(node1.element, node2.element)
-                    && equals(node1.left, node2.left)
-                    && equals(node1.right, node2.right);
+            else
+                return Objects.equals(node1.element, node2.element)
+                        && equals(node1.left, node2.left)
+                        && equals(node1.right, node2.right);
         }
 
         static int height(Node<?> node) {
@@ -45,18 +56,6 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
             else
                 return 1 + Math.max(height(node.left), height(node.right));
         }
-
-        /*
-        An equivalent form would be using an explicit generic instead of the wildcard:
-
-        static <E2> int height(Node<E2> node) {
-            if (node == null)
-                return 0;
-            else
-                return 1 + Math.max(height(node.left), height(node.right));
-        }
-
-        */
 
         static <E2> List<Node<E2>> preorder(Node<E2> node) {
             List<Node<E2>> lis = new ArrayList<>();
@@ -73,11 +72,23 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         }
     }
 
+    /**
+     * Creates an empty binary tree.
+     */
     public LinkedBinaryTree() {
         root = null;
     }
 
+    /**
+     * Creates a binary tree with the given element as root and the given trees as left and right subtrees.
+     *
+     * @param elem  the element to be used as root
+     * @param left  the left subtree of the new tree. It can be empty of {@code null} if no left subtree is desired.
+     * @param right the right subtree of the new tree. It can be empty of {@code null} if no right subtree is desired.
+     * @throws NullPointerException if the given element is {@code null}
+     */
     public LinkedBinaryTree(LinkedBinaryTree<E> left, E elem, LinkedBinaryTree<E> right) {
+        Objects.requireNonNull(elem, "Null elements are not allowed");
         Node<E> leftChild = left == null ? null : left.root;
         Node<E> rightChild = right == null ? null : right.root;
         root = new Node<>(leftChild, elem, rightChild);
@@ -87,36 +98,72 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         this.root = root;
     }
 
+    /**
+     * Returns the number of elements in this binary tree.
+     *
+     * @return the number of elements in this binary tree.
+     */
     @Override
     public int size() {
         return Node.size(root);
     }
 
+    /**
+     * Returns {@code true} if this collection contains no elements.
+     *
+     * @return {@code true} if this collection contains no elements
+     */
     @Override
     public boolean isEmpty() {
         return root == null;
     }
 
+    /**
+     * Returns {@code true} if this collection contains the specified element.
+     * More formally, returns {@code true} if and only if this collection
+     * contains at least one element {@code e} such that
+     * {@code Objects.equals(o, e)}.
+     *
+     * @param o element whose presence in this collection is to be tested
+     * @return {@code true} if this collection contains the specified
+     * element
+     * {@inheritDoc}
+     */
     @Override
     public boolean contains(Object o) {
         return Node.contains(root, o);
     }
 
+    /**
+     * Returns {@code true} if both trees have the same elements and shape.
+     *
+     * @param o object to be compared for equality with this {@code LinkedBinaryTree}
+     * @return {@code true} if the specified object is equal to this {@code LinkedBinaryTree}
+     */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof LinkedBinaryTree<?>))
+        if (!(o instanceof LinkedBinaryTree<?> bt))
             return false;
 
-        LinkedBinaryTree<?> bt = (LinkedBinaryTree<?>) o;
         return Node.equals(root, bt.root);
     }
 
-    // If height was called often, we'd better catch it in a field (as we do with size)
+    /**
+     * Return the height of this binary tree.
+     *
+     * @return the height of this binary tree.
+     */
     @Override
     public int height() {
+        // If height was called often, we'd better catch it in a field (as we do with size)
         return Node.height(root);
     }
 
+    /**
+     * Returns the left subtree of this binary tree.
+     *
+     * @return the left subtree of this binary tree.
+     */
     @Override
     public LinkedBinaryTree<E> left() {
         if (root == null)
@@ -125,6 +172,11 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         return new LinkedBinaryTree<>(root.left);
     }
 
+    /**
+     * Returns the right subtree of this binary tree.
+     *
+     * @return the right subtree of this binary tree.
+     */
     @Override
     public LinkedBinaryTree<E> right() {
         if (root == null)
@@ -133,6 +185,12 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         return new LinkedBinaryTree<>(root.right);
     }
 
+    /**
+     * Returns the root element of this binary tree.
+     *
+     * @return the root element of this binary tree.
+     * @throws NoSuchElementException if this binary tree is empty.
+     */
     @Override
     public E root() {
         if (root == null)
@@ -141,6 +199,9 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         return root.element;
     }
 
+    /**
+     * Removes the left subtree of this binary tree.
+     */
     @Override
     public void removeLeft() {
         if (root == null)
@@ -149,6 +210,9 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         root.left = null;
     }
 
+    /**
+     * Removes the right subtree of this binary tree.
+     */
     @Override
     public void removeRight() {
         if (root == null)
@@ -157,26 +221,54 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         root.right = null;
     }
 
+    /**
+     * Returns an iterator over the elements in this collection.  There are no
+     * guarantees concerning the order in which the elements are returned
+     * (unless this collection is an instance of some class that provides a
+     * guarantee).
+     *
+     * @return an {@code Iterator} over the elements in this collection
+     */
     @Override
     public Iterator<E> iterator() {
         return new Preorder();
     }
 
+    /**
+     * Returns an iterator for traversing the binary tree in pre-order.
+     *
+     * @return an iterator for traversing the binary tree in pre-order.
+     */
     @Override
     public BinaryTreeIterator<E> iteratorPre() {
         return new Preorder();
     }
 
+    /**
+     * Returns an iterator for traversing the binary tree in in-order.
+     *
+     * @return an iterator for traversing the binary tree in in-order.
+     */
     @Override
     public BinaryTreeIterator<E> iteratorIn() {
         return new Inorder();
     }
 
+    /**
+     * Returns an iterator for traversing the binary tree in post-order.
+     *
+     * @return an iterator for traversing the binary tree in post-order.
+     */
     @Override
     public BinaryTreeIterator<E> iteratorPost() {
         return new Postorder();
     }
 
+    /**
+     * Returns an iterator for traversing the binary tree in level-order.
+     *
+     * @return an iterator for traversing the binary tree in level-order.
+     */
     @Override
     public BinaryTreeIterator<E> iteratorLevels() {
         return new Levels();
@@ -206,6 +298,8 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
         @Override
         public void set(E o) {
+            if (o == null)
+                throw new IllegalArgumentException("Null elements are not allowed");
             if (lastReturned == null)
                 throw new IllegalStateException();
 
@@ -224,12 +318,12 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         return new Preorder<>(this);
     }
 
-    private static class Preorder<E2> implements BinaryTreeIterator<E2> {
+    private static class Preorder<E2> implements trees.BinaryTreeIterator<E2> {
         List<Node<E2>> listTree;
         Iterator<Node<E2>> it;
         Node<E2> lastReturned;
 
-        Preorder(LinkedBinaryTree<E2> tree) {
+        Preorder(trees.LinkedBinaryTree<E2> tree) {
             lastReturned = null;
             listTree = Node.preorder(tree.root);
             it = listTree.iterator();
