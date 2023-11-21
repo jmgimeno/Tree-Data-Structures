@@ -45,7 +45,8 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
             if (node1 == null || node2 == null)
                 return node1 == node2;
             else
-                return Objects.equals(node1.element, node2.element)
+                return node1.size == node2.size
+                        && Objects.equals(node1.element, node2.element)
                         && equals(node1.left, node2.left)
                         && equals(node1.right, node2.right);
         }
