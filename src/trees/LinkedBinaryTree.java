@@ -57,17 +57,17 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
                 return 1 + Math.max(height(node.left), height(node.right));
         }
 
-        static <E2> List<Node<E2>> preorder(Node<E2> node) {
+        static <E2> List<Node<E2>> preOrder(Node<E2> node) {
             List<Node<E2>> lis = new ArrayList<>();
-            preorder(node, lis);
+            preOrder(node, lis);
             return lis;
         }
 
-        static <E2> void preorder(Node<E2> node, List<Node<E2>> lis) {
+        static <E2> void preOrder(Node<E2> node, List<Node<E2>> lis) {
             if (node != null) {
                 lis.add(node);
-                preorder(node.left, lis);
-                preorder(node.right, lis);
+                preOrder(node.left, lis);
+                preOrder(node.right, lis);
             }
         }
     }
@@ -85,10 +85,8 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @param elem  the element to be used as root
      * @param left  the left subtree of the new tree. It can be empty of {@code null} if no left subtree is desired.
      * @param right the right subtree of the new tree. It can be empty of {@code null} if no right subtree is desired.
-     * @throws NullPointerException if the given element is {@code null}
      */
     public LinkedBinaryTree(LinkedBinaryTree<E> left, E elem, LinkedBinaryTree<E> right) {
-        Objects.requireNonNull(elem, "Null elements are not allowed");
         Node<E> leftChild = left == null ? null : left.root;
         Node<E> rightChild = right == null ? null : right.root;
         root = new Node<>(leftChild, elem, rightChild);
@@ -231,7 +229,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      */
     @Override
     public Iterator<E> iterator() {
-        return new Preorder();
+        return new PreOrderIterator();
     }
 
     /**
@@ -241,7 +239,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      */
     @Override
     public BinaryTreeIterator<E> preOrderIterator() {
-        return new Preorder();
+        return new PreOrderIterator();
     }
 
     /**
@@ -251,7 +249,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      */
     @Override
     public BinaryTreeIterator<E> inOrderIterator() {
-        return new Inorder();
+        return new InOrderIterator();
     }
 
     /**
@@ -261,7 +259,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      */
     @Override
     public BinaryTreeIterator<E> postOrderIterator() {
-        return new Postorder();
+        return new PostOrderIterator();
     }
 
     /**
@@ -271,18 +269,18 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      */
     @Override
     public BinaryTreeIterator<E> levelOrderIterator() {
-        return new Levels();
+        return new LevelOrderIterator();
     }
 
-    private class Preorder implements BinaryTreeIterator<E> {
-        List<Node<E>> listTree;
+    private class PreOrderIterator implements BinaryTreeIterator<E> {
+        List<Node<E>> nodes;
         Iterator<Node<E>> it;
         Node<E> lastReturned;
 
-        Preorder() {
+        PreOrderIterator() {
             lastReturned = null;
-            listTree = Node.preorder(LinkedBinaryTree.this.root);
-            it = listTree.iterator();
+            nodes = Node.preOrder(LinkedBinaryTree.this.root);
+            it = nodes.iterator();
         }
 
         @Override
@@ -298,8 +296,6 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
 
         @Override
         public void set(E o) {
-            if (o == null)
-                throw new IllegalArgumentException("Null elements are not allowed");
             if (lastReturned == null)
                 throw new IllegalStateException();
 
@@ -307,34 +303,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         }
     }
 
-    /*
-
-    Instead of using an internal class, we could have used a static nested class:
-    - This class need to add an explicit generic argument
-    - And needs to be passed a reference to the tree that is being iterated
-    - But using an internal class is more convenient !!!
-
-    public Iterator<E> iteratorPre() {
-        return new Preorder<>(this);
-    }
-
-    private static class Preorder<E2> implements trees.BinaryTreeIterator<E2> {
-        List<Node<E2>> listTree;
-        Iterator<Node<E2>> it;
-        Node<E2> lastReturned;
-
-        Preorder(trees.LinkedBinaryTree<E2> tree) {
-            lastReturned = null;
-            listTree = Node.preorder(tree.root);
-            it = listTree.iterator();
-        }
-
-        // ...
-    }
-
-    */
-
-    private class Inorder implements BinaryTreeIterator<E> {
+    private class InOrderIterator implements BinaryTreeIterator<E> {
 
         @Override
         public void set(E o) {
@@ -352,7 +321,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         }
     }
 
-    private class Postorder implements BinaryTreeIterator<E> {
+    private class PostOrderIterator implements BinaryTreeIterator<E> {
         @Override
         public void set(E o) {
             throw new UnsupportedOperationException("Not Implemented"); // TODO
@@ -369,7 +338,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         }
     }
 
-    private class Levels implements BinaryTreeIterator<E> {
+    private class LevelOrderIterator implements BinaryTreeIterator<E> {
         @Override
         public void set(E o) {
             throw new UnsupportedOperationException("Not Implemented"); // TODO
