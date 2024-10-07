@@ -1,14 +1,24 @@
 package trees;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
+
 /**
- * A binary tree is a tree data structure in which each node has at most two children,
- * which are referred to as the left child and the right child.
+ * A BinaryTree is a tree data structure which can be empty or combines an element of type E with two
+ * subtrees of type BinaryTree<E> called left and right.
  *
- * @param <E>
+ * @param <E> the type of elements in the binary tree
+ * @author Juan Manuel Gimeno Illa
  */
-public interface BinaryTree<E> extends Collection<E> {
+public interface BinaryTree<E> {
+
+    /**
+     * Returns the root element of this binary tree.
+     *
+     * @return the root element of this binary tree.
+     * @throws NoSuchElementException if this binary tree is empty.
+     */
+    E root();
 
     /**
      * Returns the left subtree of this binary tree.
@@ -25,23 +35,23 @@ public interface BinaryTree<E> extends Collection<E> {
     BinaryTree<E> right();
 
     /**
-     * Returns the root element of this binary tree.
+     * Returns {@code true} if this binary tree is empty.
      *
-     * @return the root element of this binary tree.
-     * @throws NoSuchElementException if this binary tree is empty.
+     * @return {@code true} if this binary tree is empty.
+     * @implNote As de default implementation calls size(), ee need the class to provide an
+     * efficient
+     * implementation of it (or override this default implementation)
      */
-    E root();
+    default boolean isEmpty() {
+        return size() == 0;
+    }
 
     /**
-     * Removes the left subtree of this binary tree.
+     * Returns the size of this binary tree.
+     *
+     * @return the size of this binary tree.
      */
-    void removeLeft();
-
-    /**
-     * Removes the right subtree of this binary tree.
-     */
-    void removeRight();
-
+    int size();
 
     /**
      * Returns the height of this binary tree.
@@ -51,30 +61,53 @@ public interface BinaryTree<E> extends Collection<E> {
     int height();
 
     /**
+     * Replaces the root element of this binary tree with the given element.
+     *
+     * @param newElement the new root element
+     * @return the old root element
+     * @throws NoSuchElementException id the tree is empty
+     */
+    E replaceRoot(E newElement);
+
+    /**
+     * Removes the left subtree of this binary tree.
+     *
+     * @throws NoSuchElementException if the tree is empty
+     */
+    void removeLeft();
+
+    /**
+     * Removes the right subtree of this binary tree.
+     *
+     * @throws NoSuchElementException if the tree is empty
+     */
+    void removeRight();
+
+    /**
      * Returns an iterator for traversing the binary tree in pre-order.
      *
      * @return an iterator for traversing the binary tree in pre-order.
      */
-    BinaryTreeIterator<E> preOrderIterator();
+    List<E> preOrder();
 
     /**
      * Returns an iterator for traversing the binary tree in in-order.
      *
      * @return an iterator for traversing the binary tree in in-order.
      */
-    BinaryTreeIterator<E> inOrderIterator();
+    List<E> inOrder();
 
     /**
      * Returns an iterator for traversing the binary tree in post-order.
      *
      * @return an iterator for traversing the binary tree in post-order.
      */
-    BinaryTreeIterator<E> postOrderIterator();
+    List<E> postOrder();
 
     /**
      * Returns an iterator for traversing the binary tree in level-order.
      *
      * @return an iterator for traversing the binary tree in level-order.
      */
-    BinaryTreeIterator<E> levelOrderIterator();
+    List<E> levelOrder();
 }

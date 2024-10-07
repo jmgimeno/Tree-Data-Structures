@@ -3,25 +3,26 @@ package trees;
 import java.util.*;
 
 /**
- * A binary tree is a tree data structure in which each node has at most two children.
- * This class implements the {@link BinaryTree} interface by using a structure of linked nodes.
+ * A LinkedBinaryTree is an implementation of {@link BinaryTree} that  a structure of linked nodes.
  *
  * @param <E> the type of elements in the binary tree
+ * @author Juan Manuel Gimeno Illa
+ * @see BinaryTree
  */
-public class LinkedBinaryTree<E> extends AbstractCollection<E> implements BinaryTree<E> {
+public class LinkedBinaryTree<E> implements BinaryTree<E>, Cloneable {
 
     /**
      * The root of the binary tree.
      */
-    private final Node<E> root;
+    private Node<E> root;
 
-    private static class Node<E1> {
-        Node<E1> left;
-        E1 element;
-        Node<E1> right;
+    private static class Node<E> implements Cloneable {
+        Node<E> left;
+        E element;
+        Node<E> right;
         int size;
 
-        Node(Node<E1> left, E1 element, Node<E1> right) {
+        Node(Node<E> left, E element, Node<E> right) {
             this.left = left;
             this.element = element;
             this.right = right;
@@ -32,13 +33,19 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
             return node == null ? 0 : node.size;
         }
 
-        static boolean contains(Node<?> node, Object obj) {
+        static int height(Node<?> node) {
             if (node == null)
-                return false;
+                return -1;
             else
-                return Objects.equals(obj, node.element)
-                        || contains(node.left, obj)
-                        || contains(node.right, obj);
+                return 1 + Math.max(height(node.left), height(node.right));
+        }
+
+        void preOrder(List<E> result) {
+            result.add(element);
+            if (left != null)
+                left.preOrder(result);
+            if (right != null)
+                right.preOrder(result);
         }
 
         static boolean equals(Node<?> node1, Node<?> node2) {
@@ -51,27 +58,35 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
                         && equals(node1.right, node2.right);
         }
 
-        static int height(Node<?> node) {
-            if (node == null)
-                return 0;
-            else
-                return 1 + Math.max(height(node.left), height(node.right));
+        @Override
+        public String toString() {
+            if (left == null && right == null) return "mkLBT(%s)".formatted(element);
+            else if (left == null) return "mkLBT(%s, %s)".formatted(element, right);
+            else if (right == null) return "mkLBT(%s, %s)".formatted(left, element);
+            else return "mkLBT(%s, %s, %s)".formatted(left, element, right);
         }
 
-        static <E2> List<Node<E2>> preOrder(Node<E2> node) {
-            List<Node<E2>> lis = new ArrayList<>();
-            preOrder(node, lis);
-            return lis;
+        @Override
+        public int hashCode() {
+            return Objects.hash(left, element, right);
         }
 
-        static <E2> void preOrder(Node<E2> node, List<Node<E2>> lis) {
-            if (node != null) {
-                lis.add(node);
-                preOrder(node.left, lis);
-                preOrder(node.right, lis);
+        @Override
+        @SuppressWarnings("unchecked")
+        public Node<E> clone()  {
+            try {
+                Node<E> clone = (Node<E>) super.clone();
+                if (left != null) clone.left = left.clone();
+                if (right != null) clone.right = right.clone();
+                return clone;
+            } catch (CloneNotSupportedException e) {
+                // this shouldn't happen, since we are Cloneable
+                throw new InternalError(e);
             }
         }
     }
+
+    // Constructors
 
     /**
      * Creates an empty binary tree.
@@ -81,11 +96,14 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
     }
 
     /**
-     * Creates a binary tree with the given element as root and the given trees as left and right subtrees.
+     * Creates a binary tree with the given element as root and the given trees as left and right
+     * subtrees.
      *
      * @param elem  the element to be used as root
-     * @param left  the left subtree of the new tree. It can be empty of {@code null} if no left subtree is desired.
-     * @param right the right subtree of the new tree. It can be empty of {@code null} if no right subtree is desired.
+     * @param left  the left subtree of the new tree. It can be {@code null} if an empty left
+     *              subtree is desired.
+     * @param right the right subtree of the new tree. It can {@code null} if an empty right
+     *              subtree is desired.
      */
     public LinkedBinaryTree(LinkedBinaryTree<E> left, E elem, LinkedBinaryTree<E> right) {
         Node<E> leftChild = left == null ? null : left.root;
@@ -97,65 +115,20 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         this.root = root;
     }
 
-    /**
-     * Returns the number of elements in this binary tree.
-     *
-     * @return the number of elements in this binary tree.
-     */
-    @Override
-    public int size() {
-        return Node.size(root);
-    }
+    // Accessors
 
     /**
-     * Returns {@code true} if this collection contains no elements.
+     * Returns the root element of this binary tree.
      *
-     * @return {@code true} if this collection contains no elements
+     * @return the root element of this binary tree.
+     * @throws NoSuchElementException if this binary tree is empty.
      */
     @Override
-    public boolean isEmpty() {
-        return root == null;
-    }
+    public E root() {
+        if (root == null)
+            throw new NoSuchElementException("root of empty tree");
 
-    /**
-     * Returns {@code true} if this collection contains the specified element.
-     * More formally, returns {@code true} if and only if this collection
-     * contains at least one element {@code e} such that
-     * {@code Objects.equals(o, e)}.
-     *
-     * @param o element whose presence in this collection is to be tested
-     * @return {@code true} if this collection contains the specified
-     * element
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean contains(Object o) {
-        return Node.contains(root, o);
-    }
-
-    /**
-     * Returns {@code true} if both trees have the same elements and shape.
-     *
-     * @param o object to be compared for equality with this {@code LinkedBinaryTree}
-     * @return {@code true} if the specified object is equal to this {@code LinkedBinaryTree}
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof LinkedBinaryTree<?> bt))
-            return false;
-
-        return Node.equals(root, bt.root);
-    }
-
-    /**
-     * Return the height of this binary tree.
-     *
-     * @return the height of this binary tree.
-     */
-    @Override
-    public int height() {
-        // If height was called often, we'd better catch it in a field (as we do with size)
-        return Node.height(root);
+        return root.element;
     }
 
     /**
@@ -184,18 +157,48 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         return new LinkedBinaryTree<>(root.right);
     }
 
+    // Properties
+
     /**
-     * Returns the root element of this binary tree.
+     * Returns {@code true} if this binary tree is empty.
      *
-     * @return the root element of this binary tree.
-     * @throws NoSuchElementException if this binary tree is empty.
+     * @return {@code true} if this binary tree is empty.
      */
     @Override
-    public E root() {
-        if (root == null)
-            throw new NoSuchElementException("root of empty tree");
+    public boolean isEmpty() {
+        return root == null;
+    }
 
-        return root.element;
+    /**
+     * Returns the number of elements in this binary tree.
+     *
+     * @return the number of elements in this binary tree.
+     */
+    @Override
+    public int size() {
+        return Node.size(root);
+    }
+
+    /**
+     * Return the height of this binary tree.
+     *
+     * @return the height of this binary tree.
+     */
+    @Override
+    public int height() {
+        // If height was called often, we'd better catch it in a field (as we do with size)
+        return Node.height(root);
+    }
+
+    // Modifiers
+
+    @Override
+    public E replaceRoot(E newElement) {
+        if (root == null)
+            throw new NoSuchElementException("the empty tree has no root to replace");
+        E oldElement = root.element;
+        root.element = newElement;
+        return oldElement;
     }
 
     /**
@@ -220,18 +223,7 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
         root.right = null;
     }
 
-    /**
-     * Returns an iterator over the elements in this collection.  There are no
-     * guarantees concerning the order in which the elements are returned
-     * (unless this collection is an instance of some class that provides a
-     * guarantee).
-     *
-     * @return an {@code Iterator} over the elements in this collection
-     */
-    @Override
-    public Iterator<E> iterator() {
-        return new PreOrderIterator();
-    }
+    // Traversals
 
     /**
      * Returns an iterator for traversing the binary tree in pre-order.
@@ -239,9 +231,13 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @return an iterator for traversing the binary tree in pre-order.
      */
     @Override
-    public BinaryTreeIterator<E> preOrderIterator() {
-        return new PreOrderIterator();
+    public List<E> preOrder() {
+        List<E> result = new ArrayList<>();
+        if (root != null)
+            root.preOrder(result);
+        return result;
     }
+
 
     /**
      * Returns an iterator for traversing the binary tree in in-order.
@@ -249,8 +245,8 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @return an iterator for traversing the binary tree in in-order.
      */
     @Override
-    public BinaryTreeIterator<E> inOrderIterator() {
-        return new InOrderIterator();
+    public List<E> inOrder() {
+        throw new UnsupportedOperationException("TODO");
     }
 
     /**
@@ -259,8 +255,8 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @return an iterator for traversing the binary tree in post-order.
      */
     @Override
-    public BinaryTreeIterator<E> postOrderIterator() {
-        return new PostOrderIterator();
+    public List<E> postOrder() {
+        throw new UnsupportedOperationException("TODO");
     }
 
     /**
@@ -269,90 +265,119 @@ public class LinkedBinaryTree<E> extends AbstractCollection<E> implements Binary
      * @return an iterator for traversing the binary tree in level-order.
      */
     @Override
-    public BinaryTreeIterator<E> levelOrderIterator() {
-        return new LevelOrderIterator();
+    public List<E> levelOrder() {
+        throw new UnsupportedOperationException("TODO");
+
     }
 
-    private class PreOrderIterator implements BinaryTreeIterator<E> {
-        List<Node<E>> nodes;
-        Iterator<Node<E>> it;
-        Node<E> lastReturned;
+    // Methods overridden from Object
 
-        PreOrderIterator() {
-            lastReturned = null;
-            nodes = Node.preOrder(LinkedBinaryTree.this.root);
-            it = nodes.iterator();
-        }
+    /**
+     * Returns {@code true} if both trees have the same elements and shape.
+     *
+     * @param o object to be compared for equality with this {@code LinkedBinaryTree}
+     * @return {@code true} if the specified object is equal to this {@code LinkedBinaryTree}
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof LinkedBinaryTree<?> bt))
+            return false;
 
-        @Override
-        public boolean hasNext() {
-            return it.hasNext();
-        }
-
-        @Override
-        public E next() {
-            lastReturned = it.next();
-            return lastReturned.element;
-        }
-
-        @Override
-        public void set(E o) {
-            if (lastReturned == null)
-                throw new IllegalStateException();
-
-            lastReturned.element = o;
-        }
+        return Node.equals(root, bt.root);
     }
 
-    private class InOrderIterator implements BinaryTreeIterator<E> {
+    @Override
+    public int hashCode() {
+        return Objects.hash(root);
+    }
 
-        @Override
-        public void set(E o) {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
-        }
+    @Override
+    public String toString() {
+        return root == null ? "mkLBT()" : root.toString();
+    }
 
-        @Override
-        public boolean hasNext() {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
-        }
+    // Cloneable implementation
 
-        @Override
-        public E next() {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
+    @Override
+    @SuppressWarnings("unchecked")
+    public LinkedBinaryTree<E> clone()  {
+        if (root == null)
+            // An empty tree is immutable so we can return this
+            return this;
+        try {
+            LinkedBinaryTree<E> clone = (LinkedBinaryTree<E>) super.clone();
+            clone.root = root.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            // this shouldn't happen, since we are Cloneable
+            throw new InternalError(e);
         }
     }
 
-    private class PostOrderIterator implements BinaryTreeIterator<E> {
-        @Override
-        public void set(E o) {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
-        }
+    // Smart constructors
 
-        @Override
-        public boolean hasNext() {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
-        }
+    private static final BinaryTree<?> UNTYPED_UNIQUE_EMPTY_TREE = new LinkedBinaryTree<>();
 
-        @Override
-        public E next() {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
-        }
+    /**
+     * Returns an empty binary tree.
+     *
+     * @param <E> the type of elements in the binary tree
+     * @return an empty binary tree
+     */
+    @SuppressWarnings("unchecked")
+    public static <E> LinkedBinaryTree<E> mkLBT() {
+        // Only works because the empty tree is immutable !!!
+        return (LinkedBinaryTree<E>) UNTYPED_UNIQUE_EMPTY_TREE;
     }
 
-    private class LevelOrderIterator implements BinaryTreeIterator<E> {
-        @Override
-        public void set(E o) {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
-        }
+    /**
+     * Returns a binary tree with the given element as root.
+     *
+     * @param elem the element to be used as root
+     * @param <E>  the type of elements in the binary tree
+     * @return a binary tree with the given element as root and left and right empty
+     */
+    public static <E> LinkedBinaryTree<E> mkLBT(E elem) {
+        return new LinkedBinaryTree<>(null, elem, null);
+    }
 
-        @Override
-        public boolean hasNext() {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
-        }
+    /**
+     * Returns a binary tree with the given element as root and the given tree as left
+     *
+     * @param left the left subtree of the new tree.
+     * @param elem the element to be used as root
+     * @param <E>  the type of elements in the binary tree
+     * @return a binary tree with the given element as root and the given tree as left and right
+     * empty
+     */
+    public static <E> LinkedBinaryTree<E> mkLBT(LinkedBinaryTree<E> left, E elem) {
+        return new LinkedBinaryTree<>(left, elem, null);
+    }
 
-        @Override
-        public E next() {
-            throw new UnsupportedOperationException("Not Implemented"); // TODO
-        }
+    /**
+     * Returns a binary tree with the given element as root and the given tree as right
+     *
+     * @param elem  the element to be used as root
+     * @param right the left subtree of the new tree.
+     * @param <E>   the type of elements in the binary tree
+     * @return a binary tree with the given element as root and the given tree as right and left
+     * empty
+     */
+    public static <E> LinkedBinaryTree<E> mkLBT(E elem, LinkedBinaryTree<E> right) {
+        return new LinkedBinaryTree<>(null, elem, right);
+    }
+
+    /**
+     * Returns a binary tree with the given element as root and the given trees as left and right
+     *
+     * @param <E>   the type of elements in the binary tree
+     * @param left  the left subtree of the new tree.
+     * @param elem  the element to be used as root
+     * @param right the left subtree of the new tree.
+     * @return a binary tree with the given element as root and the given trees as left and right
+     */
+    public static <E> LinkedBinaryTree<E> mkLBT(LinkedBinaryTree<E> left, E elem,
+                                                LinkedBinaryTree<E> right) {
+        return new LinkedBinaryTree<>(left, elem, right);
     }
 }
