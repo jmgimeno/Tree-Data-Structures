@@ -232,7 +232,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E>, Cloneable {
      */
     @Override
     public List<E> preOrder() {
-        List<E> result = new ArrayList<>();
+        List<E> result = new ArrayList<>(size());
         if (root != null)
             root.preOrder(result);
         return result;
