@@ -306,7 +306,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E>, Cloneable {
             return this;
         try {
             LinkedBinaryTree<E> clone = (LinkedBinaryTree<E>) super.clone();
-            clone.root = root.clone();
+            if (root != null) clone.root = root.clone();
             return clone;
         } catch (CloneNotSupportedException e) {
             // this shouldn't happen, since we are Cloneable
