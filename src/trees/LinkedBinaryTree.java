@@ -280,6 +280,8 @@ public class LinkedBinaryTree<E> implements BinaryTree<E>, Cloneable {
      */
     @Override
     public boolean equals(Object o) {
+        if (this == o)
+            return true;
         if (!(o instanceof LinkedBinaryTree<?> bt))
             return false;
 
